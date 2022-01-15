@@ -16,7 +16,7 @@ function Layouts({children}) {
         </Head>
 
       {router.pathname === '/login' || router.pathname ==='/nuevacuenta' ? (
-          <div className='bg-gray-800 min-h-screen flex flex-col justify-center'>
+          <div className='bg-violet-600 min-h-screen flex flex-col justify-center'>
               <div>
               {children}
               </div>
