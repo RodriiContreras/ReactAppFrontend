@@ -2,29 +2,34 @@ import React from 'react'
 import Layouts from '../components/layouts'
 import {useFormik} from 'formik'
 import * as Yup from 'yup'
-import {useQuery,gql} from '@apollo/client'
+import {useMutation,gql} from '@apollo/client'
+import { useState } from 'react'
+import {useRouter} from 'next/router'
 
-const QUERY=gql`
-query obtenerProductos{
-    obtenerProductos {
+const NUEVA_CUENTA=gql`
+mutation nuevoUsuario($input:UsuarioInput){
+    nuevoUsuario(input:$input){
       id
-      precio
       nombre
-      creado
-      existencia
+      apellido
+      email
     }
+  
   }
 `
 function nuevacuenta() {// px-8 = PADDING DERECHA IZQUIERDA , ROUNDED HACE EL EFECTO DE BORDER-RADIUS, 
-    const {data} = useQuery(QUERY);
-    console.log(data)
+    const router = useRouter();
+    const [mensaje,guardarMensaje] =useState(null)
+    const [mensajecorrecto, mensajeCorrecto] = useState(null)
+    const [nuevoUsuario] = useMutation(NUEVA_CUENTA);
+
     //Validando formulario
     const formik = useFormik({
         initialValues:{
             nombre:'',
             apellido:'',
             email:'',
-            contraseña:''
+            password:''
         },
         validationSchema:Yup.object({
             nombre: 
@@ -38,20 +43,55 @@ function nuevacuenta() {// px-8 = PADDING DERECHA IZQUIERDA , ROUNDED HACE EL EF
             .email('El E-Mail no es valido')
             .required('El E-Mail es obligatorio'),
 
-            contraseña:Yup.string()
+            password:Yup.string()
             .required('La Contraseña es obligatoria')
-            .min(6,'La contraseña debe contar con mas de 6 caracteres')
+            .min(6,'La Contraseña debe contar con mas de 6 caracteres')
 
         }),
-        onSubmit:valores=>{
-            console.log('enviando')
-            console.log(valores)
+        onSubmit: async valores=>{
+            const {nombre,apellido,email,password} = valores;
+            console.log(nombre,apellido,email,password)
+            try {
+                await nuevoUsuario({
+                    variables:{
+                        input:{
+                           nombre,
+                           apellido,
+                           email,
+                           password
+                        }
+                    }
+                })
+                guardarMensaje(null)
+                mensajeCorrecto('Se ha creado el usuario correctamente.')
+                setTimeout(() => {
+                    router.push('/login')
+                  },1500);
+            } catch (error) {
+                guardarMensaje(error.message)
+            }
         }
     });
+    const  mostrarMensajeCorrecto = () =>{
+        return (
+        <div className='my-2 bg-green-100 border-red-500 text-green-700 p-4'>
+                <p>{mensajecorrecto}</p>
+        </div>
+        )
+    }
+
+    const mostrarMensaje= () =>{
+        return(
+            <div className='my-2 bg-red-100 border-l-8 border-red-500 text-red-700 p-4'>
+                <p>{mensaje}</p>
+            </div>
+        )
+    }
     return (
 
         <>
             <Layouts>
+               
             <h1 className='text-center text-2xl font-light text-white'>Crear Nueva Cuenta</h1>
             <div className='flex justify-center mt-5'>
               <div className='w-full max-w-sm'>
@@ -103,22 +143,24 @@ function nuevacuenta() {// px-8 = PADDING DERECHA IZQUIERDA , ROUNDED HACE EL EF
                  <p className='font-bold'>{formik.errors.email}</p>
              </div> 
              : null}
+              {mensaje && mostrarMensaje()}
 
             <div className='pt-5'>
-             <label className='block text-gray-400 text-sm font-bold mb-2' htmlFor='contraseña'>
+             <label className='block text-gray-400 text-sm font-bold mb-2' htmlFor='password'>
                     Contraseña
                 </label>
                 <input className='shadow appearance-none border rounded w-full py-2 p-x3 text-gray-700 leading-tight
-                 focus:outline-none focus:shadow-outline' id='contraseña' type='password'
-                  placeholder='Contraseña' value={formik.values.contraseña} onChange={formik.handleChange}
+                 focus:outline-none focus:shadow-outline' id='password' type='password'
+                  placeholder='Contraseña' value={formik.values.password} onChange={formik.handleChange}
                   />
             </div>
             {formik.errors.contraseña ?
              <div className='my-2 bg-red-100 border-l-8 border-red-500 text-red-700 p-4'>  
                  <p className='font-bold'>Error</p>
-                 <p className='font-bold'>{formik.errors.contraseña}</p>
+                 <p className='font-bold'>{formik.errors.password}</p>
              </div> 
              : null}
+             {mensajecorrecto && mostrarMensajeCorrecto()}
             
               <input type="submit" className='bg-gray-800 w-full mt-5 p-2 text-white uppercase hover:bg-gray-900' value='Crear Nueva Cuenta'/>
               </form>

@@ -4,7 +4,6 @@ import  {useRouter} from 'next/router'
 
 function SideBar() {
     const router = useRouter();
-    console.log(router.pathname)
     return (//al ponerle paramametros en el classname,puedo hacer que el div tome el espacio en base a la pantalla para small va a ser 1/3 y XL (grande) seria de 1/5
   <aside className="bg-violet-500 sm:w-1/3 xl:w-1/5 sm:min-h-screen p-5">
       <div >

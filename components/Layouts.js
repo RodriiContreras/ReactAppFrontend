@@ -2,11 +2,11 @@ import React from 'react'
 import Head from 'next/head';
 import SideBar from './SideBar';
 import {useRouter} from 'next/router'
+import Header from './Header';
 
 
 function Layouts({children}) {
     const router = useRouter();
-    console.log(router.pathname)
     return (
         <>
         <Head>
@@ -24,10 +24,15 @@ function Layouts({children}) {
       ) : (
    <div className='bg-gray-200 min-h-screen'>
        <div className='flex min-h-screen'>
+
+
              <SideBar/>
              <main className="sm:w-2/3 xl:w-4/5 sm:min-h-screen p-10">
+             <Header/>
              {children}
              </main>
+
+
          </div>
      </div>
       )}    
