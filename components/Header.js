@@ -33,7 +33,7 @@ const Header =() => {
     return (
 <div>
    
-   <div className='flex justify-between mb-4'>
+   <div className='sm:flex  sm:justify-between mb-4'>
             <p>Hola! {nombre}</p>
 
             

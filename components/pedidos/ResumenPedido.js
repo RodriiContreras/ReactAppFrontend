@@ -9,6 +9,9 @@ const productoContext = useContext(PedidoContext)
 const {productos} =productoContext;
 
 console.log(productos)
+
+
+if(!productos) return null
   return(
 <>
 <p className='mt-2'>Ajusta las cantidades del producto</p>
