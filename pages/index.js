@@ -29,9 +29,9 @@ query obtenerClientesVendedor{
   
   
 
-  if(!data.obtenerClientesVendedor){ 
+  if(!data){ 
     router.push('/login')
-    return null
+     return null
   }
 
 
